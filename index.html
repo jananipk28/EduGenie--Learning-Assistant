@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EduGenie - Learning Assistant</title>
+
+    <link rel="stylesheet"
+          href="/static/style.css">
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>EduGenie</h1>
+
+        <p>
+            Google Gemini Powered Learning Assistant
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <label for="userInput">
+            Enter your question or topic
+        </label>
+
+        <textarea
+            id="userInput"
+            placeholder="Type your question or topic here..."
+        ></textarea>
+
+
+        <div class="buttons">
+
+            <button onclick="askQuestion()">
+                Ask Question
+            </button>
+
+            <button onclick="explainTopic()">
+                Explain
+            </button>
+
+            <button onclick="summarizeText()">
+                Summarize
+            </button>
+
+            <button onclick="generateQuiz()">
+                Quiz
+            </button>
+
+            <button onclick="learningPath()">
+                Learning Path
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="result-card">
+
+        <h2>Result</h2>
+
+        <div id="result">
+
+            Your answer will appear here...
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+
+        <p>
+            EduGenie | Powered by Google Gemini
+        </p>
+
+    </div>
+
+</div>
+
+
+<script>
+
+async function sendRequest(url, fieldName) {
+
+    const input =
+        document.getElementById("userInput").value;
+
+
+    if (input.trim() === "") {
+
+        document.getElementById("result").innerText =
+            "Please enter a question or topic.";
+
+        return;
+    }
+
+
+    document.getElementById("result").innerText =
+        "Generating response...";
+
+
+    const formData = new FormData();
+
+    formData.append(fieldName, input);
+
+
+    try {
+
+        const response = await fetch(
+            url,
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if (data.answer) {
+
+            document.getElementById("result").innerText =
+                data.answer;
+
+        } else {
+
+            document.getElementById("result").innerText =
+                "No answer received.";
+
+        }
+
+    }
+
+    catch (error) {
+
+        document.getElementById("result").innerText =
+            "Error connecting to the server.";
+
+        console.error(error);
+
+    }
+
+}
+
+
+function askQuestion() {
+
+    sendRequest(
+        "/ask",
+        "question"
+    );
+
+}
+
+
+function explainTopic() {
+
+    sendRequest(
+        "/explain",
+        "topic"
+    );
+
+}
+
+
+function summarizeText() {
+
+    sendRequest(
+        "/summarize",
+        "text"
+    );
+
+}
+
+
+function generateQuiz() {
+
+    sendRequest(
+        "/quiz",
+        "topic"
+    );
+
+}
+
+
+function learningPath() {
+
+    sendRequest(
+        "/learning-path",
+        "topic"
+    );
+
+}
+
+</script>
+
+
+</body>
+
+</html>
